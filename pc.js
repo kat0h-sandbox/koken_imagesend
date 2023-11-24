@@ -1,7 +1,11 @@
 console.log("pc");
 
 const url = new URL(window.location.href);
-url.protocol = "ws";
+if (url.protocol == "http") {
+  url.protocol = "ws"
+} else {
+  url.protocol = "wss"
+}
 url.pathname = "/pc/ws";
 ws = new WebSocket(url);
 
