@@ -21,7 +21,7 @@ let sock: undefined | WebSocket = undefined;
 app.use("*", logger());
 const password = Deno.env.get("USER_PASS");
 if (password == undefined) {
-  console.error("Environment Variable");
+  console.error("Environment Variable => USER_PASS");
   Deno.exit(2);
 }
 app.use(
