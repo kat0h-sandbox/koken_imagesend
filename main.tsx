@@ -8,6 +8,7 @@
 
 import { Hono } from "https://deno.land/x/hono@v3.10.2/mod.ts";
 import {
+  basicAuth,
   Fragment,
   jsx,
   serveStatic,
@@ -18,6 +19,18 @@ const app = new Hono();
 let sock: undefined | WebSocket = undefined;
 
 app.use("*", logger());
+const password = Deno.env.get("USER_PASS");
+if (password == undefined) {
+  console.error("Environment Variable");
+  Deno.exit(2);
+}
+app.use(
+  "/pc",
+  basicAuth({
+    username: "koken",
+    password: password,
+  }),
+);
 app.get("/favicon.ico", serveStatic({ path: "./favicon.ico" }));
 
 app.get("/upload", (c) => {
@@ -33,7 +46,7 @@ app.get("/upload", (c) => {
         <body>
           <p1>アップローダー</p1>
           <form action="/upload" method="POST" enctype="multipart/form-data">
-            <input type="file" name="image" accept="image/jpeg"/>
+            <input type="file" name="image" accept="image/jpeg" />
             <button type="submit">送信</button>
           </form>
         </body>
@@ -42,11 +55,12 @@ app.get("/upload", (c) => {
   );
 });
 app.post("/upload", async (c) => {
-  console.log(await c.req.parseBody())
+  console.log(await c.req.parseBody());
   const { image } = await c.req.parseBody();
-  console.log(image)
-  if (sock !== undefined && image instanceof File)
+  console.log(image);
+  if (sock !== undefined && image instanceof File) {
     sock.send(image);
+  }
   return c.redirect("/upload");
 });
 
