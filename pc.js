@@ -13,7 +13,7 @@ ws.addEventListener("message", (m) => {
   const elem = document.createElement("img");
   elem.src = image;
   elem.width = 300;
-  elem.onload = () => URL.revokeObjectURL(image)
+  elem.onload = () => URL.revokeObjectURL(image);
 
   main.prepend(elem);
 });
